@@ -1,6 +1,6 @@
 -- 1. Schema setup
 -- Create the staging table for raw JSON data.
-CREATE TABLE books (
+CREATE TABLE "task-1".books (
     ordinal_number SERIAL, -- I add a SERIAL column to preserve the original order of records from the JSON file, without this, the import order is lost.
     id TEXT PRIMARY KEY, -- 'id' is set to TEXT to prevent precision loss on large integers, problem BigInt overflow
     title TEXT,
@@ -16,7 +16,7 @@ CREATE TABLE books (
 -- 2. Data cleaning and transformation
 -- Remove currency symbols using Regex and convert to Numeric.
 -- Apply exchange rate: EUR to USD (rate: 1.2).
-UPDATE books
+UPDATE "task-1".books
 SET price_usd =
         CASE
             WHEN price LIKE '€%' THEN
@@ -26,21 +26,22 @@ SET price_usd =
             END;
 
 --Round the calculated USD prices to 2 decimal places.
-UPDATE books
+UPDATE "task-1".books
 SET price_usd = ROUND(price_usd, 2);
 
 --3. Analysis
-CREATE VIEW books_summary AS
+CREATE VIEW "task-1".books_summary AS
 SELECT
     year AS "publication_year",
     COUNT(*) AS "book_count",
     ROUND(AVG(price_usd), 2) AS "average_price"
-FROM books
+FROM "task-1".books
 GROUP BY year
 ORDER BY year DESC;
 
 --4. Validation
-SELECT * FROM books_summary;
-SELECT COUNT(*) AS total_books_imported FROM books;
-SELECT COUNT(*) AS total_rows_count FROM books_summary;
+SELECT * FROM "task-1".books_summary;
+SELECT COUNT(*) AS total_books_imported FROM "task-1".books;
+SELECT COUNT(*) AS total_rows_count FROM "task-1".books_summary;
+
 
