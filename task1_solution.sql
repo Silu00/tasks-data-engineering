@@ -23,13 +23,11 @@ SET price_usd =
                 CAST(regexp_replace(price, '[^\d.]', '', 'g') AS NUMERIC) * 1.2
             ELSE
                 CAST(regexp_replace(price, '[^\d.]', '', 'g') AS NUMERIC)
-            END
-WHERE id IS NOT NULL;
+            END;
 
 --Round the calculated USD prices to 2 decimal places.
 UPDATE books
-SET price_usd = ROUND(price_usd, 2)
-WHERE id IS NOT NULL;
+SET price_usd = ROUND(price_usd, 2);
 
 --3. Analysis
 CREATE VIEW books_summary AS
@@ -45,3 +43,4 @@ ORDER BY year DESC;
 SELECT * FROM books_summary;
 SELECT COUNT(*) AS total_books_imported FROM books;
 SELECT COUNT(*) AS total_rows_count FROM books_summary;
+
